@@ -1,0 +1,115 @@
+{
+    "target": "kettle",
+    "environment": "",
+    "user": "",
+    "tot_llm_call_num": 20,
+    "cell_num": 20,
+    "srcgen_example_num": 20,
+    "update_interval": 5,
+    "srcgen_agent": {
+        "name": "SrcGen",
+        "trial_num": 3,
+        "answer_parser": {
+            "name": "ProductMetaSrcGen"
+        },
+        "temperature": 1.0,
+        "max_tokens": null,
+        "input_token_num": 3708,
+        "output_token_num": 98,
+        "latency": 16.85499596595764,
+        "model": "system-agent-gpt4o"
+    },
+    "srcexp_agent": {
+        "name": "SrcExp",
+        "trial_num": 1,
+        "answer_parser": {
+            "name": "Default"
+        },
+        "temperature": 0.0,
+        "max_tokens": null,
+        "input_token_num": 2558,
+        "output_token_num": 1609,
+        "latency": 57.006006956100464,
+        "model": "system-agent-gpt4o"
+    },
+    "srceval_agent": {
+        "name": "SrcEval",
+        "trial_num": 3,
+        "answer_parser": {
+            "name": "ProductMetaSrcEvalParser"
+        },
+        "temperature": 0.0,
+        "max_tokens": null,
+        "input_token_num": 0,
+        "output_token_num": 0,
+        "latency": 0.0,
+        "model": "system-agent-gpt4o"
+    },
+    "srcgen_prompt_templ": "Provide a **noun** word or a **noun** phrase that is in the specified category. To achieve this, you should learn from the examples provided below. Each example is presented as a line in the following format:\n<category> ::: <word/phrase>\n- The first field, <category>, is an integer representing the category of the word or the phrase.\n- The second field is the word or the phrase.\n\n**Examples:**\n[[examples]]\n\nAfter studying these examples, provide a new noun word or a new noun phrase that is in the specified category and never appear in the examples:\n<[[category]]> ::: <word/prhase>\n\nInclude nothing else in your answer.",
+    "srcexp_prompt_templ": "You are an expert in product design. Your task is to use the concepts inspired by the given word or phrase to design creative ideas for a [[target]].\n\nAnswer in the following format:\n<The given word or phrase> relates to the concept of <concept 1>.\n<Concept 1> relates to <Concept 2>.\n...\n<Concept n-1> relates to <Concept n>\nInspired by <Concept n>, <your creative ideas for cache replacement policies in a few sentences>.\n\n**The given word or phrase**: [[word]]\n\nDo not include any additional text or explanation in your answer.",
+    "srceval_prompt_templ": null,
+    "embedder": null,
+    "archive": {
+        "archive": {
+            "0": [
+                3,
+                5
+            ],
+            "1": [
+                4
+            ],
+            "2": [
+                11,
+                13,
+                14
+            ],
+            "3": [
+                7,
+                17
+            ],
+            "4": [
+                15
+            ],
+            "9": [
+                2,
+                9
+            ],
+            "11": [
+                10
+            ],
+            "12": [
+                8
+            ],
+            "15": [
+                0,
+                6,
+                12,
+                16
+            ],
+            "16": [
+                18
+            ],
+            "18": [
+                1,
+                19
+            ]
+        },
+        "archive_size": {
+            "15": 4,
+            "18": 2,
+            "9": 2,
+            "0": 2,
+            "1": 1,
+            "16": 1,
+            "2": 3,
+            "3": 2,
+            "12": 1,
+            "11": 1,
+            "4": 1
+        },
+        "sum_archive_size": 20
+    },
+    "entry_counter": 20,
+    "record_jsonl_path": "/home/v-ruiyingma/ProductMeta/log/srcgen_result/record.jsonl",
+    "statistics_json_path": "/home/v-ruiyingma/ProductMeta/log/srcgen_result/statistics.json"
+}
