@@ -438,10 +438,10 @@ if __name__ == "__main__":
         target="kettle",
         environment="",
         user="",
-        tot_llm_call_num=20,
-        cell_num=20,
-        srcgen_example_num=20,
-        update_interval=5 # MUST be at least 2
+        tot_llm_call_num=400,
+        cell_num=360,
+        srcgen_example_num=360,
+        update_interval=10 # MUST be at least 2
     )
 
     src_generator.optimize()
