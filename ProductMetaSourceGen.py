@@ -445,5 +445,5 @@ if __name__ == "__main__":
         srcgen_example_num=360,
         update_interval=10 # MUST be at least 2
     )
-    ### CAUTION: SRCGEN_TEMPL/SRCEXP_PROMPT_TEMPL allows word or not
+    ### CAUTION: SRCGEN_TEMPL/SRCEXP_PROMPT_TEMPL allows phrase or not
     src_generator.optimize()
