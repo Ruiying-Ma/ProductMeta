@@ -1,9 +1,9 @@
-from ProductMetaSourceGen import Entry, ProdyctMetaSourceGen
+from ProductMetaSourceGen import Entry, ProductMetaSourceGen
 import logging
 import logging_config
 from utils import write_to_file
 
-class ProductMetaSourceGen_RS_Sources(ProdyctMetaSourceGen):
+class ProductMetaSourceGen_RS_Sources(ProductMetaSourceGen):
     def __init__(self, target, environment, user, tot_llm_call_num, cell_num, srcgen_example_num, update_interval):
         super().__init__(target, environment, user, tot_llm_call_num, cell_num, srcgen_example_num, update_interval)
         

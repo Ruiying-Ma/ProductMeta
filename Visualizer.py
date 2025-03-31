@@ -15,12 +15,18 @@ from Embedder import SentenceTransformerTextEmbedder
 
 
 class VisualizerColorType(Enum):
+    # https://matplotlib.org/stable/gallery/color/named_colors.html
     RED="r"
     GREEN="g"
     BLUE="b"
     YELLOW="y"
     GRAY="gray"
     CYAN="cyan"
+    MAGENTA="m"
+    ORANGE="orange"
+    PINK="pink"
+    LIME="lime"
+    LIGHTGREY="lightgrey"
 
 class VisualizerFigureType(Enum):
     GIF=0,
@@ -329,7 +335,7 @@ if __name__ == "__main__":
         fig_h=10,
     )
 
-    record_jsonl_path = "/home/v-ruiyingma/ProductMeta/log/srcgen_result/record.jsonl"
+    record_jsonl_path = "/home/v-ruiyingma/ProductMeta/log-kettle-20250327-001131-repeated-sampling-sources/srcgen_result/record.jsonl"
     os.makedirs(os.path.join(os.path.dirname(os.path.dirname(record_jsonl_path)), "figure"), exist_ok=True)
     stats_json_path = record_jsonl_path.replace("record.jsonl", "statistics.json")
     with open(stats_json_path, 'r') as file:

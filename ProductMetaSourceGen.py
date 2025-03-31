@@ -184,7 +184,7 @@ class Archive:
         assert sum(list(self.archive_size.values())) == self.sum_archive_size
 
 
-class ProdyctMetaSourceGen:
+class ProductMetaSourceGen:
     record_jsonl_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "log", "srcgen_result", "record.jsonl")
     statistics_json_path = record_jsonl_path.replace("record.jsonl", "statistics.json")
 
@@ -236,8 +236,10 @@ class ProdyctMetaSourceGen:
         ))
 
         # prompts
-        self.SRCGEN_PROMPT_TEMPL = '''Provide a **noun** word or a **noun** phrase that is in the specified category. To achieve this, you should learn from the examples provided below. Each example is presented as a line in the following format:\n<category> ::: <word/phrase>\n- The first field, <category>, is an integer representing the category of the word or the phrase.\n- The second field is the word or the phrase.\n\n**Examples:**\n[[examples]]\n\nAfter studying these examples, provide a new noun word or a new noun phrase that is in the specified category and never appear in the examples:\n<[[category]]> ::: <word/prhase>\n\nInclude nothing else in your answer.''' # TODO: you need to add [[quality]] score to this prompt
-        self.SRCEXP_PROMPT_TEMPL = f'''You are an expert in product design. Your task is to use the concepts inspired by the given word or phrase to design creative ideas for a [[target]].\n\nAnswer in the following format:\n<The given word or phrase> relates to the concept of <concept 1>.\n<Concept 1> relates to <Concept 2>.\n...\n<Concept n-1> relates to <Concept n>\nInspired by <Concept n>, <your creative ideas for cache replacement policies in a few sentences>.\n\n**The given word or phrase**: [[word]]\n\nDo not include any additional text or explanation in your answer.'''
+        # self.SRCGEN_PROMPT_TEMPL = '''Provide a **noun** word or a **noun** phrase that is in the specified category. To achieve this, you should learn from the examples provided below. Each example is presented as a line in the following format:\n<category> ::: <word/phrase>\n- The first field, <category>, is an integer representing the category of the word or the phrase.\n- The second field is the word or the phrase.\n\n**Examples:**\n[[examples]]\n\nAfter studying these examples, provide a new noun word or a new noun phrase that is in the specified category and never appear in the examples:\n<[[category]]> ::: <word/phrase>\n\nInclude nothing else in your answer.''' # TODO: you need to add [[quality]] score to this prompt
+        self.SRCGEN_PROMPT_TEMPL = '''Provide a **noun** word that is in the specified category. To achieve this, you should learn from the examples provided below. Each example is presented as a line in the following format:\n<category> ::: <word>\n- The first field, <category>, is an integer representing the category of the word.\n- The second field is the word.\n\n**Examples:**\n[[examples]]\n\nAfter studying these examples, provide a new noun word that is in the specified category and never appear in the examples:\n<[[category]]> ::: <word>\n\nInclude nothing else in your answer.'''
+        # self.SRCEXP_PROMPT_TEMPL = f'''You are an expert in product design. Your task is to use the concepts inspired by the given word or phrase to design creative ideas for a [[target]].\n\nAnswer in the following format:\n<The given word or phrase> relates to the concept of <concept 1>.\n<Concept 1> relates to <Concept 2>.\n...\n<Concept n-1> relates to <Concept n>\nInspired by <Concept n>, <your creative ideas for cache replacement policies in a few sentences>.\n\n**The given word or phrase**: [[word]]\n\nDo not include any additional text or explanation in your answer.'''
+        self.SRCEXP_PROMPT_TEMPL = f'''You are an expert in product design. Your task is to use the concepts inspired by the given word to design creative ideas for a [[target]].\n\nAnswer in the following format:\n<The given word> relates to the concept of <concept 1>.\n<Concept 1> relates to <Concept 2>.\n...\n<Concept n-1> relates to <Concept n>\nInspired by <Concept n>, <your creative ideas for cache replacement policies in a few sentences>.\n\n**The given word**: [[word]]\n\nDo not include any additional text or explanation in your answer.'''
         self.SRCEVAL_PROMPT_TEMPL = None # TODO: the LLM-as-a-judge rating agent that returns the quality and quality_explanation of a generated source
 
     def _set_source_quality(self, source: str):
@@ -434,7 +436,7 @@ class ProdyctMetaSourceGen:
 
 
 if __name__ == "__main__":
-    src_generator = ProdyctMetaSourceGen(
+    src_generator = ProductMetaSourceGen(
         target="kettle",
         environment="",
         user="",
@@ -443,5 +445,5 @@ if __name__ == "__main__":
         srcgen_example_num=360,
         update_interval=10 # MUST be at least 2
     )
-
+    ### CAUTION: SRCGEN_TEMPL/SRCEXP_PROMPT_TEMPL allows word or not
     src_generator.optimize()
