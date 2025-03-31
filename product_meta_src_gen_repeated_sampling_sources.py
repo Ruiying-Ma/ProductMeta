@@ -7,7 +7,8 @@ class ProductMetaSourceGen_RS_Sources(ProductMetaSourceGen):
     def __init__(self, target, environment, user, tot_llm_call_num, cell_num, srcgen_example_num, update_interval):
         super().__init__(target, environment, user, tot_llm_call_num, cell_num, srcgen_example_num, update_interval)
         
-        self.SRCGEN_PROMPT_TEMPL = '''Provide a **noun** word or a **noun** phrase that has never appeared in the following examples:\n[[examples]]\n\nInclude nothing else in your answer.\n<word/phrase>'''
+        # self.SRCGEN_PROMPT_TEMPL = '''Provide a **noun** word or a **noun** phrase that has never appeared in the following examples:\n[[examples]]\n\nInclude nothing else in your answer.\n<word/phrase>'''
+        self.SRCGEN_PROMPT_TEMPL = '''Provide a **noun** word that has never appeared in the following examples:\n[[examples]]\n\nInclude nothing else in your answer.\n<word>'''
 
     def _create_entry(self, source: str):
         if source == None:
@@ -72,5 +73,5 @@ if __name__ == "__main__":
         srcgen_example_num=360,
         update_interval=10 # MUST be at least 2
     )
-
+    ### CAUTION: SRCGEN_TEMPL/SRCEXP_PROMPT_TEMPL allows phrase or not
     src_generator.optimize()
