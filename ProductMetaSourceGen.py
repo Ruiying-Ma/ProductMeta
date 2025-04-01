@@ -200,6 +200,8 @@ class ProductMetaSourceGen:
             cell_num: int,
             srcgen_example_num: int,
             update_interval: int,
+            # init
+            init_jsonl_path: str,
     ):
         # prompt params
         self.target = target.strip().lower()
@@ -216,6 +218,8 @@ class ProductMetaSourceGen:
         self.entry_counter = 0
         self.base_ax_x = None
         self.base_ax_y = None
+        # init
+        self.init_jsonl_path = init_jsonl_path
 
         # agents
         self.srcgen_agent = Agent(AgentConfig(
@@ -417,6 +421,8 @@ class ProductMetaSourceGen:
             "cell_num": self.cell_num,
             "srcgen_example_num": self.srcgen_example_num,
             "update_interval": self.update_interval,
+            # init
+            "init_jsonl_path": self.init_jsonl_path,
             # agents
             "srcgen_agent": self.srcgen_agent.to_dict(),
             "srcexp_agent": self.srcexp_agent.to_dict(),
@@ -443,7 +449,8 @@ if __name__ == "__main__":
         tot_llm_call_num=400,
         cell_num=360,
         srcgen_example_num=360,
-        update_interval=10 # MUST be at least 2
+        update_interval=10, # MUST be at least 2,
+        init_jsonl_path=None,
     )
     ### CAUTION: SRCGEN_TEMPL/SRCEXP_PROMPT_TEMPL allows phrase or not
     src_generator.optimize()
