@@ -52,7 +52,7 @@ class AutoTokenizerTextEmbedder(EmbedderBase):
         self.model_name = model_name
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = AutoModel.from_pretrained(model_name)
-        self.dim = 512
+        self.dim = 384
 
     def _average_pool(self, last_hidden_states: Tensor, attention_mask: Tensor) -> Tensor:
         last_hidden = last_hidden_states.masked_fill(~attention_mask[..., None].bool(), 0.0)
@@ -77,7 +77,7 @@ class AutoTokenizerTextEmbedder(EmbedderBase):
         # Tokenize the inputs
         batch_dict = self.tokenizer(
             prefixed_input_list,
-            max_length=self.dim,
+            max_length=512,
             padding=True,
             truncation=True,
             return_tensors='pt',

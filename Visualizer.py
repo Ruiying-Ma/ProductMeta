@@ -11,7 +11,10 @@ logging.disable(logging.DEBUG)
 from ProductMetaSourceGen import Entry
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
-from Embedder import SentenceTransformerTextEmbedder
+# from Embedder import SentenceTransformerTextEmbedder
+# EMBEDDER = SentenceTransformerTextEmbedder()
+from Embedder import AutoTokenizerTextEmbedder
+EMBEDDER = AutoTokenizerTextEmbedder()
 
 
 class VisualizerColorType(Enum):
@@ -27,6 +30,7 @@ class VisualizerColorType(Enum):
     PINK="pink"
     LIME="lime"
     LIGHTGREY="lightgrey"
+    WHITE="white"
 
 class VisualizerFigureType(Enum):
     GIF=0,
@@ -234,8 +238,9 @@ class VisualizerProductMetaSrcGen(Visualizer):
         # Load 2D points and colors
         entries = self.load_entries(
             record_jsonl_path=record_jsonl_path,
-            recover_embedding=True
+            recover_embedding=False
         )
+
         # Initialize the figure
         qualities = [e.quality for e in entries]
         min_quality = min(qualities)
@@ -247,7 +252,9 @@ class VisualizerProductMetaSrcGen(Visualizer):
                 angle = np.pi * 2 * i / cell_num
                 self.ax.plot([0, np.cos(angle) * self._quality_to_radius(max_quality)], [0, np.sin(angle) * self._quality_to_radius(max_quality)], color=VisualizerColorType.GRAY.value, linewidth=1)
         
-        embedding_list = [e.embedding for e in entries]
+        source_list = [e.source for e in entries]
+        assert all([s != None for s in source_list])
+        embedding_list = EMBEDDER.create_embedding(source_list)
         normalized_embedding_list = StandardScaler().fit_transform(embedding_list)
         pca = PCA(n_components=2)
         pca.fit_transform(normalized_embedding_list)
@@ -256,8 +263,10 @@ class VisualizerProductMetaSrcGen(Visualizer):
 
         points = []
         colors = []
-        for entry in entries:
+        assert len(embedding_list) == len(entries)
+        for entry, embedding in zip(entries, embedding_list):
             assert isinstance(entry, Entry)
+            entry.embedding = embedding
             assert entry.embedding != None
             assert entry.quality != None
             entry.set_theta(base_ax_x, base_ax_y)
@@ -266,6 +275,9 @@ class VisualizerProductMetaSrcGen(Visualizer):
             color = VisualizerColorType.BLUE
             points.append(endpoint)
             colors.append(color)
+        
+        for i in range(10):
+            colors[i] = VisualizerColorType.RED
 
         points = np.array(points)
         # Visualize
@@ -279,8 +291,8 @@ class VisualizerProductMetaSrcGen(Visualizer):
             )
         if figure_type == VisualizerFigureType.PNG or figure_type == VisualizerFigureType.BOTH:
             self.scatter_png(
-                points=points, 
-                colors=colors, 
+                points=points[::-1], 
+                colors=colors[::-1], 
                 png_path=figure_path.replace(".gif", ".png")
             )
 
@@ -305,8 +317,11 @@ class VisualizerProductMetaSrcGen(Visualizer):
             assert entry.source != None
             sources.append(entry.source)
             colors.append(VisualizerColorType.BLUE)
+
+        for i in range(10):
+            colors[i] = VisualizerColorType.RED
             
-        entry_embeddings = SentenceTransformerTextEmbedder().create_embedding(sources)
+        entry_embeddings = EMBEDDER.create_embedding(sources)
         pca = PCA(n_components=2)
         normalized_entry_embeddings = StandardScaler().fit_transform(entry_embeddings)
         points = pca.fit_transform(normalized_entry_embeddings)
@@ -321,8 +336,8 @@ class VisualizerProductMetaSrcGen(Visualizer):
             )
         if figure_type == VisualizerFigureType.PNG or figure_type == VisualizerFigureType.BOTH:
             self.scatter_png(
-                points=points, 
-                colors=colors, 
+                points=points[::-1], 
+                colors=colors[::-1], 
                 png_path=figure_path.replace(".gif", ".png")
             )
 
@@ -335,7 +350,7 @@ if __name__ == "__main__":
         fig_h=10,
     )
 
-    record_jsonl_path = "/home/v-ruiyingma/ProductMeta/log-kettle-20250327-001131-repeated-sampling-sources/srcgen_result/record.jsonl"
+    record_jsonl_path = "/home/v-ruiyingma/ProductMeta/log-kettle-20250331-155135-repeated-sampling-sources-init-qd-20250331-125816/srcgen_result/record.jsonl"
     os.makedirs(os.path.join(os.path.dirname(os.path.dirname(record_jsonl_path)), "figure"), exist_ok=True)
     stats_json_path = record_jsonl_path.replace("record.jsonl", "statistics.json")
     with open(stats_json_path, 'r') as file:
@@ -345,7 +360,7 @@ if __name__ == "__main__":
         cell_num=100,
         record_jsonl_path=record_jsonl_path,
         figure_type=VisualizerFigureType.BOTH,
-        figure_path=os.path.join(os.path.dirname(os.path.dirname(record_jsonl_path)), "figure", "archive.png"),
+        figure_path=os.path.join(os.path.dirname(os.path.dirname(record_jsonl_path)), "figure", "archive_eb5smallv2.png"),
         frame_per_sec=1,
         points_per_frame=stats["update_interval"]# this is your update interval
     )
@@ -354,7 +369,7 @@ if __name__ == "__main__":
     
     visualizer.pca_2d(
         record_jsonl_path=record_jsonl_path,
-        figure_path=os.path.join(os.path.dirname(os.path.dirname(record_jsonl_path)), "figure", "pca_2d_label.png"),
+        figure_path=os.path.join(os.path.dirname(os.path.dirname(record_jsonl_path)), "figure", "pca_2d_eb5smallv2.png"),
         figure_type=VisualizerFigureType.BOTH,
         frame_per_sec=1,
         points_per_frame=stats["update_interval"],

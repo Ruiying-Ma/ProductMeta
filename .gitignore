@@ -2,4 +2,4 @@
 __pycache__
 log
 test*.py
-*.png
+compare_qd_rs*.png
